@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MARCOS Automation</string>
+    <string name="accessibility_service_description">
+        Allows MARCOS to read on-screen content and perform taps/gestures on
+        this device only, so it can carry out spoken commands like opening
+        apps or interacting with on-screen elements. This is used solely for
+        personal automation initiated by you — it does not run in the
+        background collecting data.
+    </string>
+</resources>
