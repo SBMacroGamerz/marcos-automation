@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var statusText: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -22,42 +24,41 @@ class MainActivity : AppCompatActivity() {
         title.textSize = 22f
         layout.addView(title)
 
-        val status = TextView(this)
-
-        status.text =
-            if (MarcosAccessibilityService.instance != null) {
-                "Status: Accessibility service is ACTIVE\nLocal command server running on port 8482."
-            } else {
-                "Status: Accessibility service is NOT enabled.\n\nTap the button below, then find \"MARCOS Automation\" in the list and turn it on."
-            }
-
-        status.setPadding(0, 32, 0, 32)
-        layout.addView(status)
+        statusText = TextView(this)
+        statusText.setPadding(0, 32, 0, 32)
+        layout.addView(statusText)
 
         val enableButton = Button(this)
         enableButton.text = "Open Accessibility Settings"
-
         enableButton.setOnClickListener {
-            startActivity(
-                Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-            )
+            startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
         }
-
         layout.addView(enableButton)
 
         val info = TextView(this)
         info.setPadding(0, 32, 0, 0)
-
-        info.text =
-            "Once enabled, MARCOS (in your browser or the MARCOS app) can send it commands at http://localhost:8482 on this device."
-
+        info.text = "Once enabled, MARCOS (in your browser or the MARCOS app) can send it " +
+            "commands at http://localhost:8482 on this device."
         layout.addView(info)
 
         setContentView(layout)
+        refreshStatus()
     }
 
     override fun onResume() {
         super.onResume()
-        recreate()
+        // Just refresh the status text — do NOT recreate the activity here,
+        // since onResume() also fires right after onCreate() on first
+        // launch, which would cause an infinite create->resume->recreate loop.
+        refreshStatus()
+    }
+
+    private fun refreshStatus() {
+        statusText.text = if (MarcosAccessibilityService.instance != null) {
+            "Status: Accessibility service is ACTIVE\nLocal command server running on port 8482."
+        } else {
+            "Status: Accessibility service is NOT enabled.\n\nTap the button below, then find " +
+            "\"MARCOS Automation\" in the list and turn it on."
+        }
     }
 }
